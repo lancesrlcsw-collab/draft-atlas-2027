@@ -1,0 +1,114 @@
+/* Pieces that are specific to the draft board (the rest is shared with the roster atlas). */
+
+.pill .swatch { width: 9px; height: 9px; border-radius: 2px; outline: 1px solid rgba(255, 255, 255, 0.45); flex: none; }
+.pill .swatch.round { border-radius: 50%; outline: 0; }
+.dz-num { font-size: 78px; min-width: 70px; }
+.card-head.wrap { flex-wrap: wrap; }
+.card .eyebrow + .prose { margin-top: 6px; }
+
+/* Club chip: the club's color behind its abbreviation, with a keyline so dark colors still read. */
+.club-chip { display: inline-grid; place-items: center; min-width: 54px; height: 34px; padding: 0 8px; border-radius: 8px; outline: 1px solid rgba(255, 255, 255, 0.4); outline-offset: -1px; font-family: var(--font-display); font-weight: 700; font-size: 22px; letter-spacing: 0.04em; color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55); flex: none; }
+.club-chip.sm { min-width: 44px; height: 26px; font-size: 17px; border-radius: 6px; }
+
+.slot { display: flex; align-items: center; gap: 16px; margin-top: 10px; }
+.slot-pick { display: flex; flex-direction: column; align-items: center; min-width: 62px; }
+.slot-pick b { font-family: var(--font-display); font-weight: 800; font-size: 58px; line-height: 0.85; }
+.slot-pick span { font-family: var(--font-label); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); margin-top: 4px; }
+.slot-club { display: flex; align-items: center; gap: 11px; min-width: 0; }
+.slot-club div { display: flex; flex-direction: column; min-width: 0; }
+.slot-club b { font-family: var(--font-label); font-weight: 700; font-size: 20px; letter-spacing: 0.02em; line-height: 1.1; }
+.slot-club span:not(.club-chip) { font-size: 12.5px; color: var(--text-2); }
+
+/* Each list's rank on a shared axis */
+.spots { margin-top: 10px; display: grid; gap: 2px; }
+.spot-row { display: grid; grid-template-columns: minmax(118px, 0.9fr) minmax(90px, 1.5fr) 54px; align-items: center; gap: 10px; padding: 4px 0; border-radius: 6px; }
+.spot-row:not(.head):hover { background: rgba(150, 225, 198, 0.06); }
+.spot-name { display: flex; flex-direction: column; font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.2; min-width: 0; }
+.spot-name small { font-weight: 400; font-size: 11px; color: var(--text-3); }
+.spot-track { position: relative; height: 16px; margin: 0 6px; }
+.spot-track::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--viz-grid); }
+.spot-track .stem { position: absolute; left: 0; top: 50%; height: 2px; margin-top: -1px; background: var(--viz-1); opacity: 0.45; border-radius: 1px; }
+.spot-track .dot { position: absolute; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--viz-1); box-shadow: 0 0 0 2px var(--viz-surface); }
+.spot-track .avg { position: absolute; top: -2px; bottom: -2px; width: 2px; margin-left: -1px; background: var(--text-2); border-radius: 1px; opacity: 0.8; }
+.spot-val { text-align: right; font-size: 13px; color: var(--text); display: flex; flex-direction: column; line-height: 1.15; }
+.spot-val small { font-size: 10.5px; color: var(--text-3); }
+.spot-row.head { padding: 0; }
+.spot-axis { position: relative; height: 14px; margin: 0 6px; }
+.spot-axis em { position: absolute; transform: translateX(-50%); font-style: normal; font-family: var(--font-mono); font-size: 10.5px; color: var(--text-3); }
+.spot-axis em:first-child { transform: none; } .spot-axis em:last-child { transform: translateX(-100%); }
+
+.trend { position: relative; margin-top: 8px; }
+.trend svg { display: block; width: 100%; height: auto; touch-action: none; }
+.trend .tick { font-family: var(--font-mono); font-size: 10px; fill: var(--text-3); }
+.trend .val { font-family: var(--font-label); font-weight: 700; font-size: 13px; fill: var(--text); }
+
+/* Ranked horizontal bars */
+.hbars, .mbars { display: grid; gap: 3px; margin-top: 10px; }
+.hbar { display: grid; grid-template-columns: minmax(96px, 0.9fr) minmax(60px, 2fr) 30px; align-items: center; gap: 10px; padding: 3px 4px; border-radius: 6px; text-align: left; font-size: 13px; }
+.hbar:disabled { cursor: default; }
+.hbar:not(:disabled):hover { background: rgba(150, 225, 198, 0.07); }
+.hbar-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hbar-track { height: 10px; }
+.hbar-track i { display: block; height: 100%; min-width: 2px; background: var(--viz-1); border-radius: 0 4px 4px 0; }
+.hbar-val { text-align: right; font-size: 12.5px; }
+.mbar { display: grid; grid-template-columns: minmax(120px, 1.1fr) minmax(70px, 1.2fr) 62px; align-items: center; gap: 10px; padding: 4px; border-radius: 6px; text-align: left; }
+.mbar:hover { background: rgba(150, 225, 198, 0.07); }
+.mbar-label { display: flex; flex-direction: column; min-width: 0; line-height: 1.2; }
+.mbar-label b { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mbar-label small, .mbar-val small { font-size: 11px; color: var(--text-3); }
+.mbar-track { position: relative; height: 10px; }
+.mbar-track .mid { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--viz-axis); }
+.mbar-track .fill { position: absolute; top: 0; bottom: 0; min-width: 2px; }
+.mbar-val { display: flex; flex-direction: column; text-align: right; font-size: 12.5px; line-height: 1.2; white-space: nowrap; }
+
+/* Pick order */
+.picks { list-style: none; margin: 0; padding: 0; }
+.picks li { display: grid; grid-template-columns: 44px minmax(190px, 1fr) minmax(190px, 1.15fr) 86px; align-items: center; gap: 12px; padding: 8px 14px; border-top: 1px solid rgba(150, 225, 198, 0.08); }
+.picks li:hover { background: rgba(95, 227, 177, 0.06); }
+.pk-no { font-family: var(--font-display); font-weight: 800; font-size: 32px; line-height: 0.9; text-align: center; color: var(--blue-bright); }
+.pk-club { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.pk-club > span:last-child, .pk-player { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.pk-club b { font-family: var(--font-label); font-weight: 600; font-size: 16px; letter-spacing: 0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.picks em, .trades em, .tracker .sub { font-style: normal; font-size: 12px; color: var(--text-3); }
+.pk-player .plink { font-size: 15px; align-self: flex-start; }
+.pk-meta { display: flex; flex-direction: column; text-align: right; font-size: 12.5px; line-height: 1.25; }
+.trades { list-style: none; margin: 9px 0 0; padding: 0; display: grid; gap: 9px; font-size: 13.5px; }
+.trades li { display: grid; grid-template-columns: 28px 1fr; gap: 8px; }
+.trades li > span:first-child { color: var(--text-3); font-size: 12px; padding-top: 2px; }
+.trades em { display: block; }
+
+/* Tracking board table */
+.pos-filter { display: flex; flex-wrap: wrap; gap: 5px; padding: 0 14px 10px; }
+.tracker .rk { font-family: var(--font-display); font-weight: 700; font-size: 18px; color: var(--blue-bright); width: 38px; }
+.tracker .lead + .lead { left: 38px; white-space: normal; min-width: 168px; }
+.tracker .sub { display: block; font-family: var(--font-body); }
+.tracker tr.sep-after td { border-bottom: 1px solid var(--line-strong); }
+.mv { display: inline-flex; align-items: center; gap: 5px; }
+.mv i { width: 8px; height: 8px; border-radius: 2px; }
+.stat-table tr.groups th { position: static; border-bottom: 0; padding-bottom: 0; text-align: center; color: var(--text-2); }
+.stat-table tr.groups th + th { border-left: 1px solid var(--line); }
+.news .chips { margin-top: 6px; }
+.chip.small.ghost { cursor: default; text-transform: capitalize; }
+
+/* The dock carries three groups here, so let it scroll sideways before it crowds the legend. */
+.dock { max-width: calc(100vw - 120px); overflow-x: auto; scrollbar-width: none; }
+.dock::-webkit-scrollbar { display: none; }
+.legend { bottom: 84px; }
+.dock.shifted { max-width: calc(100vw - var(--dossier-w) - 44px); transform: none; left: 16px; }
+
+@media (max-width: 900px) {
+  .dock { max-width: none; }
+  .dock.shifted { left: max(16px, env(safe-area-inset-left, 0px)); max-width: none; }
+  .legend { bottom: calc(122px + env(safe-area-inset-bottom)); }
+  .picks li { grid-template-columns: 34px minmax(0, 1fr); gap: 4px 10px; padding: 9px 12px; }
+  .pk-no { font-size: 26px; grid-row: span 2; align-self: start; padding-top: 3px; }
+  .pk-player { grid-column: 2; }
+  .pk-meta { display: none; }
+  .spot-row { grid-template-columns: minmax(96px, 0.9fr) minmax(70px, 1.3fr) 44px; gap: 6px; }
+  .mbar { grid-template-columns: minmax(96px, 1.1fr) minmax(50px, 1fr) 56px; }
+  .slot-pick b { font-size: 46px; }
+  .dz-num { font-size: 60px; min-width: 52px; }
+}
+
+/* The backdrop lettering is bright, so the board panels are a little more opaque than the player file. */
+.teampanel { background: rgba(5, 15, 12, 0.94); }

@@ -112,6 +112,9 @@ function parseStats(j) {
   }))
 }
 
+/** Kickoff times arrive in UTC; a Saturday night game is still Saturday where it was played. */
+const easternDate = (iso) => new Date(iso).toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+
 /** One season's game log: every game with its opponent, result and the stat columns ESPN lists. */
 function parseGameLog(j) {
   if (!j?.labels?.length) return null
@@ -123,7 +126,7 @@ function parseGameLog(j) {
         const ev = events[e.eventId]
         if (!ev) continue
         games.push({
-          id: e.eventId, date: ev.gameDate?.slice(0, 10) || null, week: ev.week ?? null, type: /post|bowl|playoff/i.test(st.displayName || '') ? 'post' : 'reg',
+          id: e.eventId, date: ev.gameDate ? easternDate(ev.gameDate) : null, week: ev.week ?? null, type: /post|bowl|playoff/i.test(st.displayName || '') ? 'post' : 'reg',
           home: ev.atVs === 'vs', opp: ev.opponent?.abbreviation || null, oppName: ev.opponent?.displayName || null,
           result: ev.gameResult || null, score: ev.score || null, values: (e.stats || []).map(numeric),
         })

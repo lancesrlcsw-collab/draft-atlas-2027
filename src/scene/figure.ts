@@ -4,15 +4,27 @@
 import * as THREE from 'three'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 
-export const KIT = {
-  jersey: new THREE.Color('#0a7cc4'),
-  jerseyLight: new THREE.Color('#1a94e0'),
+const BASE = {
   pants: new THREE.Color('#aab4bd'),
-  helmet: new THREE.Color('#c3ccd4'),
-  stripe: new THREE.Color('#0a7cc4'),
+  helmet: new THREE.Color('#c9d2d9'),
   trim: new THREE.Color('#f3f7fa'),
   dark: new THREE.Color('#0d1620'),
 }
+
+/**
+ * A kit in the school's primary color. Only the color is used (no marks or lettering), and very
+ * dark colors are lifted so the figure still reads against the dark floor.
+ */
+export function kitFor(hex?: string) {
+  const jersey = new THREE.Color(hex || '#5b6f84')
+  const hsl = { h: 0, s: 0, l: 0 }
+  jersey.getHSL(hsl)
+  if (hsl.l < 0.27) jersey.setHSL(hsl.h, Math.min(hsl.s, 0.85), 0.27 + (hsl.s < 0.12 ? 0.06 : 0))
+  if (hsl.l > 0.8) jersey.setHSL(hsl.h, hsl.s, 0.8)
+  const light = jersey.clone().lerp(new THREE.Color('#ffffff'), 0.22)
+  return { ...BASE, jersey, jerseyLight: light, stripe: jersey }
+}
+export type Kit = ReturnType<typeof kitFor>
 
 function paint(geo: THREE.BufferGeometry, color: THREE.Color): THREE.BufferGeometry {
   const g = geo.index ? geo.toNonIndexed() : geo
@@ -42,7 +54,7 @@ function limb(a: THREE.Vector3, b: THREE.Vector3, r0: number, r1: number, color:
   return paint(geo, color)
 }
 
-export function buildFigure(girth: number): THREE.BufferGeometry {
+export function buildFigure(girth: number, KIT: Kit): THREE.BufferGeometry {
   const g = girth
   const V = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z)
   const parts: THREE.BufferGeometry[] = []
@@ -100,7 +112,7 @@ export function numberTexture(n: number | string): THREE.CanvasTexture {
   const ctx = c.getContext('2d')!
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
   ctx.font = `800 118px ${FONT_DISPLAY}`
-  ctx.lineWidth = 7; ctx.strokeStyle = 'rgba(4,30,52,0.9)'; ctx.lineJoin = 'round'
+  ctx.lineWidth = 7; ctx.strokeStyle = 'rgba(4,24,18,0.9)'; ctx.lineJoin = 'round'
   ctx.strokeText(key, 64, 70)
   ctx.fillStyle = '#ffffff'
   ctx.fillText(key, 64, 70)
@@ -111,8 +123,8 @@ export function numberTexture(n: number | string): THREE.CanvasTexture {
   return tex
 }
 
-/** Floating name plate: number, surname and position. Returns the texture and its aspect ratio. */
-export function nameTexture(number: number | undefined, name: string, position: string): { texture: THREE.CanvasTexture; aspect: number } {
+/** Floating name plate: consensus rank, surname and position. Returns the texture and its aspect ratio. */
+export function nameTexture(number: number | string | undefined, name: string, position: string): { texture: THREE.CanvasTexture; aspect: number } {
   const pad = 18, h = 84
   const measure = document.createElement('canvas').getContext('2d')!
   const numText = number !== undefined ? String(number) : ''
@@ -129,17 +141,17 @@ export function nameTexture(number: number | undefined, name: string, position: 
   const ctx = c.getContext('2d')!
   ctx.fillStyle = 'rgba(3,10,18,0.78)'
   ctx.beginPath(); ctx.roundRect(1, 1, w - 2, h - 2, 12); ctx.fill()
-  ctx.strokeStyle = 'rgba(150,200,240,0.28)'; ctx.lineWidth = 2
+  ctx.strokeStyle = 'rgba(150,230,200,0.3)'; ctx.lineWidth = 2
   ctx.beginPath(); ctx.roundRect(1, 1, w - 2, h - 2, 12); ctx.stroke()
   ctx.textBaseline = 'middle'
   let x = pad
   if (numText) {
-    ctx.font = `800 58px ${FONT_DISPLAY}`; ctx.fillStyle = '#4fc0ff'
+    ctx.font = `800 58px ${FONT_DISPLAY}`; ctx.fillStyle = '#5fe3b1'
     ctx.fillText(numText, x, h / 2 + 4); x += wNum
   }
   ctx.font = `600 44px ${FONT_LABEL}`; ctx.fillStyle = '#f2f7fb'
   ctx.fillText(label, x, h / 2 + 3); x += wName + 14
-  ctx.font = `600 26px ${FONT_LABEL}`; ctx.fillStyle = 'rgba(170,196,216,0.9)'
+  ctx.font = `600 26px ${FONT_LABEL}`; ctx.fillStyle = 'rgba(175,210,198,0.92)'
   ctx.fillText(position, x, h / 2 + 5)
   const texture = new THREE.CanvasTexture(c)
   texture.colorSpace = THREE.SRGBColorSpace
