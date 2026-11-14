@@ -96,7 +96,7 @@ export interface Dossier {
   links: { espn?: string; wikipedia?: string }
   wiki?: {
     title: string; url: string; description?: string; touched?: string; intro: string
-    sections: { key: string; title: string; text: string }[]
+    sections?: { key: string; title: string; text: string }[]
     family?: { relation: string; name: string; description?: string; url: string }[]
   }
 }
