@@ -1,0 +1,42 @@
+{
+  "name": "draft-atlas-2027",
+  "private": true,
+  "version": "1.0.0",
+  "description": "An unofficial interactive 3D model of the 2027 NFL draft class, built from open college football data and freely published draft boards.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "data": "node --use-env-proxy pipeline/run.mjs",
+    "data:check": "node pipeline/check.mjs",
+    "build:artifact": "VITE_TARGET=artifact vite build && node scripts/artifact-page.mjs"
+  },
+  "engines": {
+    "node": ">=22.21"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/ibm-plex-sans": "^5.3.0",
+    "@fontsource/saira-condensed": "^5.3.0",
+    "@fontsource/saira-extra-condensed": "^5.3.0",
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.2",
+    "@react-three/postprocessing": "^3.2.2",
+    "postprocessing": "^6.39.6",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "three": "^0.187.0",
+    "zustand": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/three": "^0.187.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8"
+  }
+}
