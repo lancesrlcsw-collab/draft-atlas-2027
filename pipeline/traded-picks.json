@@ -1,0 +1,17 @@
+{
+  "checked": "2026-11-14",
+  "method": "Each entry is a first- or second-round pick in the 2027 draft that has changed hands, taken from the published report linked beside it. Every data refresh compares the resulting pick counts with the newest published two-round mock draft and records any disagreement.",
+  "trades": [
+    { "round": 1, "original": "IND", "owner": "NYJ", "note": "Sauce Gardner trade, November 2025", "source": { "label": "NFL.com: 2027 draft order", "url": "https://www.nfl.com/news/2027-nfl-draft-order-biggest-needs-for-every-team" } },
+    { "round": 1, "original": "GB", "owner": "DAL", "note": "Micah Parsons trade, August 2025", "source": { "label": "NFL.com: 2027 draft order", "url": "https://www.nfl.com/news/2027-nfl-draft-order-biggest-needs-for-every-team" } },
+    { "round": 1, "original": "LAR", "owner": "CLE", "note": "Myles Garrett trade, June 2026", "source": { "label": "ESPN: Browns trade Myles Garrett to Rams", "url": "https://www.espn.com/nfl/story/_/id/48939456/sources-browns-rams-finalizing-myles-garrett-blockbuster-trade" } },
+    { "round": 1, "original": "JAX", "owner": "PHI", "note": "Jordan Davis trade, November 2026", "source": { "label": "Philadelphia Eagles: Jordan Davis trade", "url": "https://www.philadelphiaeagles.com/news/eagles-trade-jordan-davis-to-the-jaguars-for-multiple-high-draft-picks" } },
+    { "round": 1, "original": "CHI", "owner": "TEN", "note": "Jeffery Simmons trade, October 2026", "source": { "label": "Tennessee Titans: Jeffery Simmons trade", "url": "https://www.tennesseetitans.com/news/titans-trade-dt-jeffery-simmons-to-the-chicago-bears-in-exchange-for-two-first-round-picks" } },
+    { "round": 2, "original": "JAX", "owner": "ATL", "note": "Jessie Bates III trade, November 2026", "source": { "label": "Yahoo Sports: Jaguars' 2027 picks after the Davis and Bates trades", "url": "https://sports.yahoo.com/articles/updated-jaguars-2027-draft-picks-020604447.html" } },
+    { "round": 2, "original": "HOU", "owner": "ARI", "note": "Marvin Harrison Jr. trade, October 2026", "source": { "label": "NFL.com: Marvin Harrison Jr. trade", "url": "https://nfl.com/news/marvin-harrison-jr-trade-texans-cardinals" } },
+    { "round": 2, "original": "BUF", "owner": "TEN", "note": "Amani Hooker trade, November 2026", "source": { "label": "Tennessee Titans: Amani Hooker trade", "url": "https://www.tennesseetitans.com/news/titans-trade-safety-amani-hooker-and-a-fifth-round-pick-to-the-buffalo-bills-for-a-second-round-pick-in-the-2027-nfl-draft" } }
+  ],
+  "conditional": [
+    { "round": 1, "owner": "NYJ", "keeps": "DAL", "from": ["DAL", "GB"], "takes": "earlier", "note": "Quinnen Williams trade, November 2025: the better of Dallas's two first-round picks", "source": { "label": "ESPN: Jets trade Quinnen Williams to Cowboys", "url": "https://www.espn.com/nfl/story/_/id/46848422/sources-jets-trade-quinnen-williams-cowboys" } }
+  ]
+}
