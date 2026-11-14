@@ -58,12 +58,12 @@ export async function download(url, { ttlHours = 3 } = {}) {
 }
 
 /** GET JSON with caching. Returns null on 404. `politeMs` spaces out uncached requests to the same service. */
-export async function getJSON(url, { ttlHours = 1, headers = {}, politeMs = 0 } = {}) {
+export async function getJSON(url, { ttlHours = 1, headers = {}, politeMs = 0, retries = 4 } = {}) {
   await fs.mkdir(CACHE_DIR, { recursive: true })
   const file = path.join(CACHE_DIR, `${keyFor(url)}.json`)
   if (fresh(file, ttlHours)) return JSON.parse(await fs.readFile(file, 'utf8'))
   if (politeMs) await sleep(politeMs)
-  const res = await fetchRetry(url, { headers: { accept: 'application/json', ...headers } })
+  const res = await fetchRetry(url, { headers: { accept: 'application/json', ...headers }, retries })
   if (res.status === 404) return null
   if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`)
   const text = await res.text()

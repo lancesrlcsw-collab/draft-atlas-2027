@@ -56,7 +56,7 @@ export function parseExtract(text) {
 
 async function fetchPage(title) {
   const u = `${WP}?action=query&prop=extracts%7Cinfo%7Cdescription&explaintext=1&exsectionformat=wiki&inprop=url&redirects=1&format=json&formatversion=2&titles=${encodeURIComponent(title)}`
-  const j = await getJSON(u, { ttlHours: 24, politeMs: 400 })
+  const j = await getJSON(u, { ttlHours: 24, politeMs: 400, retries: 1 })
   const page = j?.query?.pages?.[0]
   if (!page || page.missing || !page.extract) return null
   return { title: page.title, url: page.fullurl, description: page.description || null, touched: page.touched || null, extract: page.extract }
@@ -73,7 +73,7 @@ export function isThisPlayer(page, player) {
 
 async function searchPage(player) {
   const u = `${WP}?action=query&list=search&srlimit=3&format=json&formatversion=2&srsearch=${encodeURIComponent(`"${player.name}" American football ${player.schools?.[0] || ''}`)}`
-  const j = await getJSON(u, { ttlHours: 24, politeMs: 400 })
+  const j = await getJSON(u, { ttlHours: 24, politeMs: 400, retries: 1 })
   for (const hit of j?.query?.search || []) {
     const page = await fetchPage(hit.title)
     if (page && isThisPlayer(page, player)) return page
@@ -107,17 +107,26 @@ async function publicRelatives(titles) {
   return out
 }
 
+/** Seconds one build may spend asking Wikipedia. Answers are cached for a day, so later builds carry on from here. */
+const BUDGET_MS = Number(process.env.PIPELINE_WIKI_BUDGET_S || 300) * 1000
+
 /**
  * @param {{key:string, name:string, schools:string[]}[]} players
- * @param {Record<string, object>} previous background text from the last build, kept when Wikipedia cannot be reached
+ * @param {Record<string, object>} previous background text from the last build, kept for anyone Wikipedia could not be asked about this time
  */
 export async function loadWiki(players, previous = {}) {
   const out = {}
   const pages = {}
+  const asked = new Set()
+  const started = Date.now()
   let failures = 0
   let reached = false
-  for (const p of players) {
-    if (failures >= 3 && !reached) break // Wikipedia is refusing this machine; stop asking
+  let stopped = null
+  // Players with nothing on file yet go first, so every build makes progress on the gaps.
+  const order = [...players.filter((p) => !previous[p.key]), ...players.filter((p) => previous[p.key])]
+  for (const p of order) {
+    if (failures >= 4) { stopped = 'Wikipedia kept refusing requests'; break }
+    if (Date.now() - started > BUDGET_MS) { stopped = `the ${Math.round(BUDGET_MS / 1000)}-second allowance ran out`; break }
     try {
       const prev = previous[p.key]
       let page = prev?.title ? await fetchPage(prev.title) : null
@@ -125,25 +134,26 @@ export async function loadWiki(players, previous = {}) {
       if (!page) page = await searchPage(p)
       reached = true
       failures = 0
+      asked.add(p.key)
       if (page) pages[p.key] = page
     } catch (err) {
       failures++
       if (reached) console.warn(`  wiki: ${p.name}: ${err.message}`)
     }
   }
-  if (!reached) {
-    console.warn('  wiki: Wikipedia could not be reached; keeping the background text from the last build')
-    return { wiki: Object.fromEntries(players.filter((p) => previous[p.key]).map((p) => [p.key, previous[p.key]])), reached: false }
-  }
+  if (stopped) console.warn(`  wiki: stopped after ${asked.size} of ${players.length} players (${stopped}); the rest keep what was on file`)
   let relatives = {}
-  try { relatives = await publicRelatives(Object.values(pages).map((p) => p.title)) } catch (err) { console.warn(`  wikidata: ${err.message}`) }
+  if (Object.keys(pages).length) { try { relatives = await publicRelatives(Object.values(pages).map((p) => p.title)) } catch (err) { console.warn(`  wikidata: ${err.message}`) } }
   for (const p of players) {
     const page = pages[p.key]
-    if (!page) continue
-    const family = relatives[page.title] || []
+    if (!page) {
+      // Not asked this time (or the request failed): keep what the last build had.
+      if (!asked.has(p.key) && previous[p.key]) out[p.key] = previous[p.key]
+      continue
+    }
     const parsed = parseExtract(page.extract)
     if (!parsed.intro) continue
-    out[p.key] = { title: page.title, url: page.url, description: page.description, touched: page.touched, ...parsed, family }
+    out[p.key] = { title: page.title, url: page.url, description: page.description, touched: page.touched, ...parsed, family: relatives[page.title] || [] }
   }
-  return { wiki: out, reached: true }
+  return { wiki: out, reached, asked: asked.size }
 }
