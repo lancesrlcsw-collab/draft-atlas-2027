@@ -313,7 +313,7 @@ function StoryTab({ d }: { d: DossierData }) {
         {w.description && <p className="eyebrow">{w.description}</p>}
         {w.intro.split('\n').filter(Boolean).map((t, i) => <p className="prose" key={i}>{t}</p>)}
       </section>
-      {w.sections.map((s) => (
+      {(w.sections || []).map((s) => (
         <section className="card" key={s.title}>
           <h3>{s.title}</h3>
           {s.text.split('\n').filter(Boolean).map((t, i) => (/^[A-Z0-9 –-]{4,}$/.test(t) ? <h4 key={i}>{t}</h4> : <p className="prose" key={i}>{t}</p>))}

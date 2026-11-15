@@ -18,7 +18,7 @@ function fresh(file, ttlHours) {
   return ageH < ttlHours
 }
 
-async function fetchRetry(url, { headers = {}, retries = 4 } = {}) {
+async function fetchRetry(url, { headers = {}, retries = 4, maxWaitS = 60 } = {}) {
   let lastErr
   for (let i = 0; i <= retries; i++) {
     try {
@@ -28,7 +28,7 @@ async function fetchRetry(url, { headers = {}, retries = 4 } = {}) {
         // Honour the server's back-off request when it sends one.
         const wait = Number(res.headers.get('retry-after'))
         lastErr = new Error(`HTTP ${res.status}`)
-        await sleep(Number.isFinite(wait) && wait > 0 ? Math.min(wait, 60) * 1000 : 1500 * 2 ** i)
+        await sleep(Number.isFinite(wait) && wait > 0 ? Math.min(wait, maxWaitS) * 1000 : Math.min(1500 * 2 ** i, maxWaitS * 1000))
         continue
       }
       return res
@@ -58,12 +58,12 @@ export async function download(url, { ttlHours = 3 } = {}) {
 }
 
 /** GET JSON with caching. Returns null on 404. `politeMs` spaces out uncached requests to the same service. */
-export async function getJSON(url, { ttlHours = 1, headers = {}, politeMs = 0 } = {}) {
+export async function getJSON(url, { ttlHours = 1, headers = {}, politeMs = 0, retries = 4, maxWaitS = 60 } = {}) {
   await fs.mkdir(CACHE_DIR, { recursive: true })
   const file = path.join(CACHE_DIR, `${keyFor(url)}.json`)
   if (fresh(file, ttlHours)) return JSON.parse(await fs.readFile(file, 'utf8'))
   if (politeMs) await sleep(politeMs)
-  const res = await fetchRetry(url, { headers: { accept: 'application/json', ...headers } })
+  const res = await fetchRetry(url, { headers: { accept: 'application/json', ...headers }, retries, maxWaitS })
   if (res.status === 404) return null
   if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`)
   const text = await res.text()

@@ -6,7 +6,7 @@ import { SEASON, DRAFT_YEAR, BOARD_SIZE, PICKS, LINK_ONLY, DATA_SOURCES, STALE_D
 import * as espn from './espn.mjs'
 import { buildConsensus } from './consensus.mjs'
 import { buildOrder, crossCheck, loadTrades } from './order.mjs'
-import { loadWiki } from './wiki.mjs'
+import { loadWiki, WIKI_RULES } from './wiki.mjs'
 import { NFL_TEAMS } from './nfl-teams.mjs'
 import { compact, nameKey, ordinal, round, slugify } from './lib/util.mjs'
 import { load as loadDrafttek } from './sources/drafttek.mjs'
@@ -258,13 +258,13 @@ for (const d of dossiers) { const old = await readJson(path.join(OUT, 'players',
 let wikiReached = false
 if (process.env.PIPELINE_SKIP_WIKI === '1') {
   log('Skipping Wikipedia (PIPELINE_SKIP_WIKI); keeping existing background text')
-  for (const d of dossiers) if (previousWiki[d.slug]) d.wiki = previousWiki[d.slug]
+  for (const d of dossiers) if (previousWiki[d.slug]?.rules === WIKI_RULES) d.wiki = previousWiki[d.slug]
 } else {
   log('Loading Wikipedia backgrounds')
   const res = await loadWiki(dossiers.map((d) => ({ key: d.slug, name: d.name, schools: [d.school?.name, ...d.bio.previousSchools].filter(Boolean) })), previousWiki)
   wikiReached = res.reached
   for (const d of dossiers) if (res.wiki[d.slug]) { d.wiki = res.wiki[d.slug]; d.links.wikipedia = res.wiki[d.slug].url }
-  log(`  ${Object.keys(res.wiki).length} of ${dossiers.length} players have background text${res.reached ? '' : ' (carried over)'}`)
+  log(`  ${Object.keys(res.wiki).length} of ${dossiers.length} players have background text (${res.reached ? `${res.asked} looked up this run` : 'Wikipedia could not be reached; carried over'})`)
 }
 for (const d of dossiers) if (d.wiki?.url) d.links.wikipedia = d.wiki.url
 
