@@ -75,3 +75,7 @@ npm run build:artifact   # writes dist-artifact/: page.html plus assets/ and dat
 ```
 
 This packages the same app for publishing as a Claude artifact: asset and data paths are relative, and links use the hash (`#p-<slug>`, `#b-<panel>`) because an artifact cannot own URL paths. `dist-artifact/files.json` lists the supporting files to publish alongside `page.html`. An artifact is a snapshot: it shows the data as of the build, and is refreshed by building and publishing again.
+
+### As a desktop app
+
+The website carries a web app manifest, so Chrome and Edge offer to install it: open the site, then use the install icon at the right of the address bar (or the browser menu, "Install Green Room Atlas"). On a Mac in Safari, use File > Add to Dock. The installed app opens in its own window with its own icon and always shows the same live data as the website.
