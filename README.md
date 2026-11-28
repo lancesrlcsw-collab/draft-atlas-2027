@@ -38,7 +38,7 @@ npm run data        # rebuild public/data from the live sources
 npm run data:check  # sanity-check the result
 ```
 
-`npm run data` writes nothing when the content has not changed. `.github/workflows/refresh-data.yml` runs both commands on a schedule (every four hours, and hourly on Saturday afternoons and nights as college games finish) and commits when something moved, which triggers a redeploy. Scheduled workflows only run from a repository's default branch.
+`npm run data` writes nothing when the content has not changed. `.github/workflows/refresh-data.yml` runs both commands twice a week (Sunday and Wednesday mornings, US Eastern) and commits when something moved, which triggers a redeploy. It can also be started by hand at any time from the repository's Actions tab ("Refresh data", then "Run workflow"). Scheduled workflows only run from a repository's default branch.
 
 The data script starts Node with `--use-env-proxy`, so it also works behind an HTTP proxy such as a Claude Code cloud session. That flag needs Node 22.21 or newer. If Wikipedia cannot be reached (it refuses some shared cloud addresses), the build keeps the background text from the last successful run rather than dropping it; `PIPELINE_SKIP_WIKI=1` skips that step outright.
 
