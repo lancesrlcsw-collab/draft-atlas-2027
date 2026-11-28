@@ -4,9 +4,8 @@ name: Refresh data
 # A commit to the default branch triggers a redeploy on the host.
 on:
   schedule:
-    - cron: '23 */4 * * *'          # every four hours
-    - cron: '53 17-23 * * 6'        # Saturday afternoons and evenings (UTC): hourly, as college games finish
-    - cron: '53 0-9 * * 0'          # late Saturday games (UTC Sunday morning)
+    - cron: '17 11 * * 0'           # Sunday morning (US Eastern): after Saturday's college games
+    - cron: '17 11 * * 3'           # Wednesday morning: after the week's new rankings and NFL results
   workflow_dispatch:
 
 permissions:

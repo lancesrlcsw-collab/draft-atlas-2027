@@ -209,7 +209,7 @@ function AboutPanel({ draft }: { draft: DraftData }) {
       <section className="card">
         <h3>What this is</h3>
         <p className="prose">{SITE_NAME} is an independent fan project: a 3D model of the {draft.draftYear} NFL draft class. The projected first two rounds stand on the stage in pick order, the rest of a {draft.boardSize}-player tracking board stands behind them, and every figure opens into a player file. It is not affiliated with or endorsed by the NFL, the NCAA, any conference, school or club, or any outlet whose rankings it cites, and it uses no official logos or photographs.</p>
-        <p className="prose">Data was last rebuilt {timeAgo(draft.generatedAt)} ({new Date(draft.generatedAt).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}). It refreshes automatically several times a day.</p>
+        <p className="prose">Data was last rebuilt {timeAgo(draft.generatedAt)} ({new Date(draft.generatedAt).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}). It refreshes automatically twice a week, on Sunday and Wednesday mornings.</p>
       </section>
 
       <section className="card">
